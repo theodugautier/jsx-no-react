@@ -1,4 +1,4 @@
-import jsxElem, { render } from "./module";
+import jsxElem, { render, renderBeforeEnd, renderAfterEnd } from "./module";
 import expectExport from "expect";
 
 describe("jsxElement usage", () => {
@@ -100,7 +100,7 @@ describe("jsxElement usage", () => {
       <i>{[...Array(props.dots)].map(idx => ".")}</i>
     );
 
-    const element =  <div>
+    const element = <div>
       <Hello name="foo" />
       <CustomSeparator dots={50} />
       <Hello name="bar" />
@@ -118,7 +118,7 @@ describe("jsxElement usage", () => {
     }
 
     const element = <div><Hello /></div>;
-    
+
     expect(element.innerHTML).toEqual("<h1>Hello</h1><h1>world</h1>");
   });
 });
@@ -133,6 +133,38 @@ describe("render", () => {
     render(<Hello name="world" />, { insertAdjacentElement: mockElement });
     expect(mockElement.mock.calls.length).toBe(1);
     expect(mockElement.mock.calls[0][0]).toBe("afterbegin");
+    expect(mockElement.mock.calls[0][1].outerHTML).toEqual(
+      "<h1>Hello world</h1>"
+    );
+  });
+});
+
+describe("renderBeforeEnd", () => {
+  it("adds the output before the end of the element", () => {
+    function Hello(props) {
+      return <h1>Hello {props.name}</h1>;
+    }
+
+    const mockElement = jest.fn();
+    renderBeforeEnd(<Hello name="world" />, { insertAdjacentElement: mockElement });
+    expect(mockElement.mock.calls.length).toBe(1);
+    expect(mockElement.mock.calls[0][0]).toBe("beforeend");
+    expect(mockElement.mock.calls[0][1].outerHTML).toEqual(
+      "<h1>Hello world</h1>"
+    );
+  });
+});
+
+describe("renderAfterEnd", () => {
+  it("adds the output after rhe end of the element", () => {
+    function Hello(props) {
+      return <h1>Hello {props.name}</h1>;
+    }
+
+    const mockElement = jest.fn();
+    renderAfterEnd(<Hello name="world" />, { insertAdjacentElement: mockElement });
+    expect(mockElement.mock.calls.length).toBe(1);
+    expect(mockElement.mock.calls[0][0]).toBe("afterend");
     expect(mockElement.mock.calls[0][1].outerHTML).toEqual(
       "<h1>Hello world</h1>"
     );
