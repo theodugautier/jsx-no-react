@@ -1,4 +1,4 @@
-import jsxElem, { render, renderBeforeEnd, renderAfterEnd } from "./module";
+import jsxElem, { render, renderBeforeEnd, renderAfterEnd, renderAndReplace } from "./module";
 import expectExport from "expect";
 
 describe("jsxElement usage", () => {
@@ -156,7 +156,7 @@ describe("renderBeforeEnd", () => {
 });
 
 describe("renderAfterEnd", () => {
-  it("adds the output after rhe end of the element", () => {
+  it("adds the output after the end of the element", () => {
     function Hello(props) {
       return <h1>Hello {props.name}</h1>;
     }
@@ -166,6 +166,21 @@ describe("renderAfterEnd", () => {
     expect(mockElement.mock.calls.length).toBe(1);
     expect(mockElement.mock.calls[0][0]).toBe("afterend");
     expect(mockElement.mock.calls[0][1].outerHTML).toEqual(
+      "<h1>Hello world</h1>"
+    );
+  });
+});
+
+describe("renderAndReplace", () => {
+  it("replace content and adds the output", () => {
+    function Hello(props) {
+      return <h1>Hello {props.name}</h1>;
+    }
+
+    const mockElement = document.createElement("div");
+    document.body.appendChild(mockElement);
+    renderAndReplace(<Hello name="world" />, document.body);
+    expect(document.body.innerHTML).toEqual(
       "<h1>Hello world</h1>"
     );
   });

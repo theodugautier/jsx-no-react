@@ -50,6 +50,11 @@ export function renderAfterEnd(elem, parent) {
   parent.insertAdjacentElement("afterend", elem);
 }
 
+export function renderAndReplace(elem, parent) {
+  parent.innerHTML = "";
+  parent.insertAdjacentElement("afterbegin", elem);
+}
+
 function addAttributes(elem, attrs) {
   if (attrs === null || attrs === undefined) attrs = {};
   for (let [attr, value] of Object.entries(attrs)) {
